@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Mermi Balistiği Hesaplama | Yorgun Mermi Analizi | Olay Yeri İncelemesi | Canik, Sarsılmaz, Glock</title>
+    <meta name="description" content="Mermi isabet elipsi ve namlu çıkış hızı verileriyle mermi çarpma açısı, tahmini atış mesafesi ve yörünge analizi. Hava sürtünmesi hesaba katılarak yorgun mermi vakaları için daha gerçekçi sonuçlar. Adli balistik ve olay yeri incelemede pratik yardım.">
+    <meta name="keywords" content="mermi mesafe hesaplama, mermi açı hesaplama, mermi açısı, balistik analiz, atış mesafesi, mermi yörüngesi, adli balistik, atış açısı, namlu çıkış hızı, mermi hasarı, mermi izi, yorgun mermi, Canik, Sarsılmaz, TİSAŞ, Glock, Beretta, AK-47, Uzi, Hatsan, Stoeger, ATA Arms, Balistik Katsayı, Mermi Ağırlığı">
+    <link rel="canonical" href="https://KULLANICI_ADINIZ.github.io/DEPO_ADINIZ/">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* Genel Stil Ayarları */
+        body {
+            font-family: 'Open Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #6a11cb 0%, #2575fc 100%); /* Mor-mavi degrade */
+            color: #f4f4f4; /* Açık gri metin rengi */
+            line-height: 1.6;
+            min-height: 100vh; /* Tam sayfa yüksekliği */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.95); /* Yarı şeffaf beyaz */
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            color: #333; /* İç metin rengi koyu */
+        }
+
+        h1 {
+            color: #4a0080; /* Koyu mor */
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5em; /* Ayarlanmış başlık boyutu */
+            margin-bottom: 25px;
+            border-bottom: 3px solid #0056b3; /* Koyu mavi çizgi */
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+
+        h2 {
+            color: #004080; /* Daha koyu mavi */
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8em; /* Ayarlanmış alt başlık boyutu */
+            margin-top: 35px;
+            margin-bottom: 18px;
+        }
+
+        p {
+            font-size: 1em; /* Ayarlanmış paragraf fontu */
+            margin-bottom: 15px;
+        }
+
+        /* Form Elemanları */
+        label {
+            display: block;
+            text-align: left;
+            margin-bottom: 8px;
+            font-weight: 600; /* Kalınlık */
+            color: #444;
+            font-size: 1em;
+        }
+
+        input[type="number"],
+        select {
+            width: calc(100% - 24px); /* Padding ve border'ı hesaba kat */
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #a0a0a0;
+            border-radius: 8px;
+            font-size: 1em;
+            box-sizing: border-box;
+            background-color: #f9f9f9;
+        }
+
+        button {
+            background-color: #ff6f61; /* Canlı mercan kırmızısı */
+            color: white;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: 700;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: auto;
+            margin: 25px auto;
+            display: block;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        button:hover {
+            background-color: #e65c50; /* Hover'da daha koyu */
+            transform: translateY(-2px); /* Hafif yukarı kalkma efekti */
+        }
+
+        .result {
+            margin-top: 35px;
+            padding: 25px;
+            background-color: #e0f2f7; /* Açık mavi arka plan */
+            border-left: 6px solid #007bff; /* Mavi sol çizgi */
+            border-radius: 10px;
+            text-align: left;
+            font-size: 1.1em;
+            color: #222;
+        }
+
+        .result p {
+            margin-bottom: 10px;
+        }
+
+        .result strong {
+            color: #0056b3; /* Koyu mavi */
+        }
+
+        .note {
+            font-size: 0.9em;
+            color: #555;
+            margin-top: 35px;
+            padding: 18px;
+            background-color: #ffeccf; /* Açık turuncu/bej tonu */
+            border-radius: 10px;
+            border: 1px dashed #ffa000; /* Turuncu kesikli çizgi */
+            text-align: left;
+        }
+
+        .note ul {
+            list-style-type: disc;
+            margin-left: 20px;
+            padding-left: 0;
+        }
+
+        .note li {
+            margin-bottom: 5px;
+        }
+        
+        .note ol {
+            list-style-type: decimal;
+            margin-left: 20px;
+            padding-left: 0;
+        }
+        .note ol li {
+            margin-bottom: 5px;
+        }
+
+        #customBallisticDiv {
+            margin-top: -10px; /* Üstteki boşluğu azalt */
+            margin-bottom: 20px;
+        }
+
+        /* Duyarlı Tasarım */
+        @media (max-width: 768px) {
+            .container {
+                margin: 20px 15px;
+                padding: 20px;
+            }
+            h1 {
+                font-size: 2em;
+            }
+            h2 {
+                font-size: 1.5em;
+            }
+            input[type="number"],
+            select,
+            button {
+                font-size: 0.95em;
+                padding: 10px;
+            }
+            .result, .note {
+                font-size: 1em;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Mermi Balistiği Hesaplama Aracı</h1>
+        <p>Mermi isabet elipsi ve namlu çıkış hızı verilerini kullanarak mermi çarpma açısı, tahmini atış mesafesi ve yörünge analizi yapın. Hava sürtünmesi hesaba katılarak 'yorgun mermi' vakaları için daha gerçekçi sonuçlar elde edin.</p>
+
+        <h2>Gerekli Girdiler</h2>
+
+        <label for="kisaEksen">1. İsabet Elipsinin Kısa Eksen Uzunluğu (cm):</label>
+        <input type="number" id="kisaEksen" value="0.8" step="0.01" placeholder="Örn: 0.8 cm">
+
+        <label for="uzunEksen">2. İsabet Elipsinin Uzun Eksen Uzunluğu (cm):</label>
+        <input type="number" id="uzunEksen" value="0.9" step="0.01" placeholder="Örn: 0.9 cm">
+
+        <label for="isabetYuksekligi">3. Merminin Duvara Çarptığı Noktanın Yerden Yüksekliği (cm):</label>
+        <input type="number" id="isabetYuksekligi" value="230" step="1" placeholder="Örn: 230 cm">
+
+        <label for="atisYuksekligi">4. Atıcının (Namlunun) Yerden Tahmini Yüksekliği (cm):</label>
+        <input type="number" id="atisYuksekligi" value="150" step="1" placeholder="Örn: 150 cm">
+
+        <label for="fisekTuru">5. Fişek Türü Seçimi (Namlu Çıkış Hızı, Mermi Ağırlığı ve BC dahil):</label>
+        <select id="fisekTuru">
+            <option value="290,4.6,0.100">Browning FN 1910 / 7.65mm (.32 ACP)</option>
+            <option value="290,4.6,0.100">CZ 83 / 7.65mm Browning</option>
+            <option value="360,7.45,0.160" selected>Canik TP9 / 9x19mm Parabellum</option>
+            <option value="360,7.45,0.160">Sarsılmaz SAR 9 / 9x19mm Parabellum</option>
+            <option value="360,7.45,0.160">TİSAŞ Zigana PX-9 / 9x19mm Parabellum</option>
+            <option value="360,7.45,0.160">Glock 17 / 19 / 9x19mm Parabellum</option>
+            <option value="360,7.45,0.160">Beretta 92 FS / 9x19mm Parabellum</option>
+            <option value="720,7.97,0.250">AK-47 (Kaleşnikof) / 7.62x39mm</option>
+            <option value="390,7.45,0.160">Uzi SMG / 9x19mm Parabellum</option>
+            <option value="265,14.9,0.190">Thompson M1A1 / .45 ACP</option>
+            <option value="410,28.3,0.120">Hatsan Escort PS / 12 Kalibre (Slug)</option>
+            <option value="410,28.3,0.120">Stoeger P3000 / 12 Kalibre (Slug)</option>
+            <option value="410,28.3,0.120">ATA Arms Neo Tac / 12 Kalibre (Slug)</option>
+            <option value="custom">Kendi Detaylarımı Gireceğim (Hız, Ağırlık, BC)</option>
+        </select>
+
+        <div id="customBallisticDiv" style="display: none;">
+            <label for="customMuzzleVelocity">Namlu Çıkış Hızı (m/s):</label>
+            <input type="number" id="customMuzzleVelocity" value="300" step="1" placeholder="Örn: 300 m/s">
+            <label for="customBulletWeight">Mermi Ağırlığı (gram):</label>
+            <input type="number" id="customBulletWeight" value="8" step="0.1" placeholder="Örn: 8 gram">
+            <label for="customBC">Balistik Katsayı (G1 BC):</label>
+            <input type="number" id="customBC" value="0.160" step="0.001" placeholder="Örn: 0.160">
+        </div>
+
+        <button onclick="hesapla()">HESAPLA</button>
+
+        <div class="result" id="sonuclar">
+            <h2>Analiz Sonuçları</h2>
+            <p>Yukarıdaki bilgileri girip "HESAPLA" butonuna tıklayarak mermi balistiği sonuçlarını görebilirsiniz.</p>
+        </div>
+
+        <div class="note">
+            <p><strong>Önemli Notlar ve Olay Yeri İpuçları:</strong></p>
+            <ul>
+                <li>Bu model, hava sürtünmesini de hesaba katarak merminin yörüngesini simüle eder, bu sayede özellikle 'yorgun mermi' vakaları için daha gerçekçi sonuçlar verir.</li>
+                <li>Elde edilen sonuçlar birer **simülasyondur** ve **adli kesinlik taşımaz**. Saha çalışmaları ve uzman görüşü her zaman önceliklidir.</li>
+                <li>Fişek hızları, mermi ağırlıkları ve balistik katsayılar (BC) **tahmini referans değerlerdir**. Gerçek değerler; mermi tipine, barut yüküne, namlu uzunluğuna, sıcaklığa ve üreticiye göre önemli ölçüde değişebilir.</li>
+                <li><strong>Elips Ölçümleri (Kısa ve Uzun Eksen):</strong> Merminin çarptığı yüzeyde oluşan elipsin en dar (kısa) ve en geniş (uzun) noktalarını hassas bir kumpas veya cetvel ile milimetrik olarak ölçün. Bu, merminin çarpışma açısını belirlemek için kritiktir.</li>
+                <li><strong>Atış Yüksekliği Tahmini:</strong> Atıcının yerden yüksekliğini (namlu yüksekliğini), olası atış pozisyonlarını (ayakta, çömelerek, araçtan vb.) ve hedefteki isabet noktasına göre tahmini olarak belirleyin.</li>
+                <li><strong>Merminin Geldiği Yön (Azimut Açısı) Nasıl Tespit Edilir?</strong> Web aracımız yatay mesafeyi hesaplar ancak merminin tam olarak hangi yönden (örn: Batıdan) geldiğini doğrudan hesaplamaz. Bu bilgiyi olay yerinde tespit etmeniz gerekir:
+                    <ol>
+                        <li>Mermi giriş deliği ve çevresindeki hasarı inceleyerek merminin geldiği yatay yönü belirleyin. Hasarın asimetrisi bu konuda ipucu verir.</li>
+                        <li>Mümkünse, giriş deliğinden bir balistik çubuk (prop rod) veya lazer hattı geçirerek merminin yörüngesini görselleştirin.</li>
+                        <li>Pusulanızı yere paralel tutun, manyetik kuzeyi bulun ve ardından merminin geldiği yöne hizaladığınız çubuk/hat üzerinden azimut açısını (0-360°) okuyun.</li>
+                    </ol>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Fişek türü seçimi değiştiğinde manuel giriş alanlarını göster/gizle
+        document.getElementById('fisekTuru').addEventListener('change', function() {
+            var customBallisticDiv = document.getElementById('customBallisticDiv');
+            if (this.value === 'custom') {
+                customBallisticDiv.style.display = 'block';
+            } else {
+                customBallisticDiv.style.display = 'none';
+            }
+        });
+
+        // Hava sürtünmesi modelini içeren balistik hesaplama fonksiyonu
+        function hesapla() {
+            // Giriş değerlerini al
+            const kisaEksen = parseFloat(document.getElementById('kisaEksen').value); // cm
+            const uzunEksen = parseFloat(document.getElementById('uzunEksen').value); // cm
+            const isabetYuksekligiCm = parseFloat(document.getElementById('isabetYuksekligi').value); // cm
+            const atisYuksekligiCm = parseFloat(document.getElementById('atisYuksekligi').value); // cm
+
+            let V0_mps, bulletMass_kg, BC_G1; // Başlangıç Hızı (m/s), Mermi Kütlesi (kg), Balistik Katsayı (G1)
+
+            const fisekTuruSecim = document.getElementById('fisekTuru').value;
+            if (fisekTuruSecim === 'custom') {
+                V0_mps = parseFloat(document.getElementById('customMuzzleVelocity').value); // m/s
+                bulletMass_kg = parseFloat(document.getElementById('customBulletWeight').value) / 1000; // gramdan kg'a
+                BC_G1 = parseFloat(document.getElementById('customBC').value);
+            } else {
+                const [hiz, agirlik_gram, bc] = fisekTuruSecim.split(',').map(Number);
+                V0_mps = hiz; // m/s
+                bulletMass_kg = agirlik_gram / 1000; // gramdan kg'a
+                BC_G1 = bc;
+            }
+
+            // Giriş değerlerini kontrol et
+            if (isNaN(kisaEksen) || isNaN(uzunEksen) || isNaN(isabetYuksekligiCm) || isNaN(atisYuksekligiCm) ||
+                isNaN(V0_mps) || isNaN(bulletMass_kg) || isNaN(BC_G1) ||
+                kisaEksen <= 0 || uzunEksen <= 0 || kisaEksen > uzunEksen ||
+                isabetYuksekligiCm < 0 || atisYuksekligiCm < 0 ||
+                V0_mps <= 0 || bulletMass_kg <= 0 || BC_G1 <= 0) {
+                document.getElementById('sonuclar').innerHTML = `
+                    <h2>Hata!</h2>
+                    <p>Lütfen tüm alanlara geçerli ve pozitif sayısal değerler girin.</p>
+                    <p>Kısa eksen uzun eksenden büyük olamaz.</p>
+                    <p>Yükseklik değerleri negatif olamaz, namlu çıkış hızı, mermi ağırlığı ve BC pozitif olmalıdır.</p>
+                `;
+                return;
+            }
+
+            // Sabitler
+            const g = 9.81; // Yerçekimi ivmesi (m/s^2)
+            const rho = 1.225; // Hava yoğunluğu (kg/m^3) - Standart deniz seviyesi
+
+            // Mermi kalibrelerini metre cinsinden alarak kesit alanını hesaplayalım
+            let kalibre_m; // Metre cinsinden kalibre çapı
+            switch (fisekTuruSecim) {
+                case "290,4.6,0.100": // 7.65mm (.32 ACP)
+                    kalibre_m = 0.0078; // .308 inç = 7.82mm
+                    break;
+                case "360,7.45,0.160": // 9x19mm Parabellum
+                case "390,7.45,0.160": // Uzi 9x19mm Parabellum
+                    kalibre_m = 0.00902; // .355 inç = 9.02mm
+                    break;
+                case "720,7.97,0.250": // 7.62x39mm (AK-47)
+                    kalibre_m = 0.00792; // .312 inç = 7.92mm
+                    break;
+                case "265,14.9,0.190": // .45 ACP (Thompson)
+                    kalibre_m = 0.01143; // .450 inç = 11.43mm
+                    break;
+                case "410,28.3,0.120": // 12 Kalibre Slug
+                    kalibre_m = 0.0185; // .729 inç = 18.5mm
+                    break;
+                default: // Özel veya bilinmeyen durumda 9mm varsayımı
+                    kalibre_m = 0.00902;
+                    break;
+            }
+            const A = Math.PI * (kalibre_m / 2)**2; // Merminin kesit alanı (m^2)
+
+            // G1 Balistik Katsayısı temelinde drag (sürüklenme) ivmesi için basit bir yaklaşım
+            const drag_coeff_base = (0.5 * rho * A) / bulletMass_kg;
+
+            // --- 1. Çarpış açısı hesaplaması ---
+            let carpisAcisiRadyan;
+            const oran = kisaEksen / uzunEksen;
+            if (oran > 1) { // Normalde olmaması gereken durum
+                 document.getElementById('sonuclar').innerHTML = `
+                    <h2>Hata!</h2>
+                    <p>Kısa eksen uzun eksenden büyük olamaz. Lütfen değerleri kontrol edin.</p>
+                `;
+                return;
+            } else if (oran > 0.999999) { // Yuvarlama hatalarını engellemek için 1'e çok yakınsa 90 derece kabul et
+                carpisAcisiRadyan = Math.PI / 2; // 90 derece
+            } else {
+                carpisAcisiRadyan = Math.asin(oran);
+            }
+            const carpisAcisiDerece = carpisAcisiRadyan * (180 / Math.PI);
+
+            // --- 2. Hava Sürtünmeli Balistik Simülasyonu (Nümerik Çözüm) ---
+            const dt = 0.001; // Zaman adımı (saniye) - daha küçük değerler daha hassas ama yavaş
+            const maxSimulationTime = 20; // Maksimum simülasyon süresi (saniye) - çok uzak atışlar için
+            const maxDistance = 3000; // Maksimum simüle edilecek yatay mesafe (metre)
+
+            let bestTheta0_rad = null;
+            let minAngleDiff = Infinity;
+            let bestSimulatedDistance = 0;
+            let bestFlightTime = 0;
+            let finalImpactAngleFromSimulation = 0;
+
+            // Başlangıç atış açısını farklı değerlerde deneyelim (-45 derece (aşağı) ile +70 derece (yukarı))
+            for (let theta0_deg = -5; theta0_deg <= 70; theta0_deg += 0.2) { // Daha geniş aralık, daha küçük artışlar
+                const currentTheta0_rad = theta0_deg * (Math.PI / 180);
+
+                let x = 0;
+                let y = atisYuksekligiCm / 100; // Metre
+                let vx = V0_mps * Math.cos(currentTheta0_rad);
+                let vy = V0_mps * Math.sin(currentTheta0_rad);
+                let t = 0;
+
+                let simImpactAngleDeg = 0;
+                
+                // Merminin yörüngesi boyunca ilerlemesi
+                while (t < maxSimulationTime && x < maxDistance && y >= -1) { // y -1 metreden aşağı düşerse durdur
+                    const V_total = Math.sqrt(vx * vx + vy * vy);
+                    if (V_total === 0) { // Mermi tamamen durduysa
+                        break;
+                    }
+
+                    // Hava sürtünme ivmesinin büyüklüğü
+                    const a_drag_magnitude = drag_coeff_base * (V_total * V_total) / BC_G1; // BC'yi de dahil ediyoruz
+
+                    // İvme bileşenleri
+                    const ax_drag = -(a_drag_magnitude * (vx / V_total)); // Yatay sürtünme ivmesi
+                    const ay_drag = -(a_drag_magnitude * (vy / V_total)); // Dikey sürtünme ivmesi
+
+                    const ax = ax_drag;
+                    const ay = -g + ay_drag; // Yerçekimi + dikey sürtünme
+
+                    // Hızları güncelle (Euler)
+                    vx += ax * dt;
+                    vy += ay * dt;
+
+                    // Konumu güncelle (Euler)
+                    x += vx * dt;
+                    y += vy * dt;
+                    t += dt;
+
+                    // Hedef yüksekliğe yakınsa veya geçtiyse
+                    const y_target = isabetYuksekligiCm / 100;
+                    if (y <= y_target && vy < 0) { // Hedef yüksekliği geçtiyse ve düşüyorsa
+                        // Çok küçük bir interpolasyonla tam çarpma anını tahmin et
+                        const t_impact_fraction = (y_target - (y - vy*dt)) / (vy*dt);
+                        const interpolated_t = t - dt + dt * t_impact_fraction;
+                        const interpolated_x = x - vx*dt + vx*dt * t_impact_fraction;
+
+                        const finalVx_interp = vx - ax * dt * (1 - t_impact_fraction); // Interpolasyonlu son hız
+                        const finalVy_interp = vy - ay * dt * (1 - t_impact_fraction); // Interpolasyonlu son hız
+                        
+                        // Çarpışma anındaki açıyı hesapla (mutlak değer olarak)
+                        if (finalVx_interp > 0) { // Yatay hızın pozitif olması beklenir
+                            simImpactAngleDeg = Math.atan(Math.abs(finalVy_interp / finalVx_interp)) * (180 / Math.PI);
+                            
+                            // Çarpma açısı farkını kontrol et
+                            const currentAngleDiff = Math.abs(simImpactAngleDeg - carpisAcisiDerece);
+                            if (currentAngleDiff < minAngleDiff) {
+                                minAngleDiff = currentAngleDiff;
+                                bestTheta0_rad = currentTheta0_rad;
+                                bestSimulatedDistance = interpolated_x;
+                                bestFlightTime = interpolated_t;
+                                finalImpactAngleFromSimulation = simImpactAngleDeg;
+                            }
+                        }
+                        break; // Bu yörünge hedefe ulaştı, sonlandır
+                    }
+                }
+            }
+
+
+            // --- Sonuçları Ekrana Yazdır ---
+            let resultHtml = "<h2>Analiz Sonuçları</h2>";
+            // minAngleDiff < 20 derece toleransı, oldukça kötü bir eşleşme bile olsa sonuç vermesini sağlar
+            if (bestTheta0_rad !== null && minAngleDiff < 20) { 
+                resultHtml += `<p><strong>1. Hesaplanan Çarpış Açısı (İsabet Elipsinden):</strong> ${carpisAcisiDerece.toFixed(2)}°</p>`;
+                resultHtml += `<p><strong>2. Tahmini Atış Mesafesi (Yatay Menzil):</strong> ${bestSimulatedDistance.toFixed(2)} metre</p>`;
+                resultHtml += `<p><strong>3. Tahmini Başlangıç Atış Açısı:</strong> ${(bestTheta0_rad * 180 / Math.PI).toFixed(2)}°</p>`;
+                resultHtml += `<p><strong>4. Tahmini Uçuş Süresi:</strong> ${bestFlightTime.toFixed(2)} saniye</p>`;
+                resultHtml += `<p><strong>5. Simülasyonla Bulunan Çarpış Açısı (Doğrulama):</strong> ${finalImpactAngleFromSimulation.toFixed(2)}° (Hedeflenen: ${carpisAcisiDerece.toFixed(2)}°)</p>`;
+                resultHtml += `<p><strong>6. Çarpış Açısı Farkı (Modelin Hassasiyeti):</strong> ${minAngleDiff.toFixed(2)}°</p>`;
+            } else {
+                resultHtml += `
+                    <h2>Uyarı: Tahmini Atış Mesafesi Bulunamadı veya Yüksek Hassasiyetle Eşleşmedi!</h2>
+                    <p>Girilen kısa eksen/uzun eksen oranına (${oran.toFixed(3)}) karşılık gelen çarpış açısı (${carpisAcisiDerece.toFixed(2)}°) ile simülasyonlarımız arasında yeterince yakın bir eşleşme bulunamadı veya simülasyon tamamlanamadı.</p>
+                    <p>Olası nedenler ve çözümler:</p>
+                    <ul>
+                        <li><strong>Girdi Değerlerini Kontrol Edin:</strong> Özellikle kısa/uzun eksen ölçümlerinizde küçük hatalar büyük fark yaratabilir. Tekrar kontrol edin.</li>
+                        <li><strong>Yükseklik Farkı:</strong> Atıcının ve isabet noktasının yükseklik farkı, seçilen fişeğin menzil limitlerinin dışında olabilir.</li>
+                        <li><strong>Fişek Türü (Namlu Çıkış Hızı, Mermi Ağırlığı, BC):</strong> Seçilen fişek türünün balistik verileri, senaryonuza tam uymayabilir. 'Kendi Detaylarımı Gireceğim' seçeneğini kullanarak manuel ayarlamalar yapmayı deneyin.</li>
+                        <li><strong>Çok Sığ veya Çok Dik Çarpma Açısı:</strong> Çok sığ açılar (elips neredeyse bir çizgiye yakın) veya çok dik açılar (elips neredeyse daire) hesaplamayı zorlaştırabilir.</li>
+                        <li><strong>"Yorgun Mermi" Senaryosu:</strong> Çok uzun mesafeler veya çok düşük hızlı çarpmalar için, merminin çoktan enerjisini kaybettiği bir noktadan gelmesi nedeniyle sonuçlar belirsizleşebilir.</li>
+                    </ul>
+                    <p>Lütfen girdilerinizi gözden geçirin ve tekrar deneyin.</p>
+                `;
+            }
+            document.getElementById('sonuclar').innerHTML = resultHtml;
+        }
+    </script>
+
+</body>
+</html>
