@@ -1,0 +1,1 @@
+# mermi-gelis-noktas-
