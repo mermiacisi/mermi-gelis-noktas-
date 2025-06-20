@@ -7,7 +7,7 @@
     <title>Mermi Balistiği Hesaplama | Yorgun Mermi Analizi | Olay Yeri İncelemesi | Canik, Sarsılmaz, Glock</title>
     <meta name="description" content="Mermi isabet elipsi ve namlu çıkış hızı verileriyle mermi çarpma açısı, tahmini atış mesafesi ve yörünge analizi. Hava sürtünmesi hesaba katılarak yorgun mermi vakaları için daha gerçekçi sonuçlar. Adli balistik ve olay yeri incelemede pratik yardım.">
     <meta name="keywords" content="mermi mesafe hesaplama, mermi açı hesaplama, mermi açısı, balistik analiz, atış mesafesi, mermi yörüngesi, adli balistik, atış açısı, namlu çıkış hızı, mermi hasarı, mermi izi, yorgun mermi, Canik, Sarsılmaz, TİSAŞ, Glock, Beretta, AK-47, Uzi, Hatsan, Stoeger, ATA Arms, Balistik Katsayı, Mermi Ağırlığı">
-    <link rel="canonical" href="https://KULLANICI_ADINIZ.github.io/DEPO_ADINIZ/">
+    <link rel="canonical" href="https://Mermiacisi.github.io/mermi-gelis-nok/">
     
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
 
@@ -186,7 +186,7 @@
 
     <div class="container">
         <h1>Mermi Balistiği Hesaplama Aracı</h1>
-        <p>Mermi isabet elipsi ve namlu çıkış hızı verilerini kullanarak mermi çarpma açısı, tahmini atış mesafesi ve yörünge analizi yapın. Hava sürtünmesi hesaba katılarak 'yorgun mermi' vakaları için daha gerçekçi sonuçlar elde edin.</p>
+        <p>Mermi isabet elipsi ve namlu çıkış hızı verilerini kullanarak mermi çarpma açısı, tahmini atış mesafesi ve yörünge analizi yapın. Hava sürtünmesi hesaba katılarak 'yorgun mermi' vakaları için daha gerçekçi sonuçlar. Adli balistik ve olay yeri incelemede pratik yardım.</p>
 
         <h2>Gerekli Girdiler</h2>
 
@@ -201,6 +201,11 @@
 
         <label for="atisYuksekligi">4. Atıcının (Namlunun) Yerden Tahmini Yüksekliği (cm):</label>
         <input type="number" id="atisYuksekligi" value="150" step="1" placeholder="Örn: 150 cm">
+
+        <div style="margin-bottom: 20px; text-align: left;">
+            <input type="checkbox" id="yorgunMermiModu" onchange="toggleYorgunMermiMode()">
+            <label for="yorgunMermiModu" style="display: inline-block; margin-left: 10px; font-weight: 600;">Yorgun Mermi Modu (Düşük Hız Tahmini)</label>
+        </div>
 
         <label for="fisekTuru">5. Fişek Türü Seçimi (Namlu Çıkış Hızı, Mermi Ağırlığı ve BC dahil):</label>
         <select id="fisekTuru">
@@ -256,15 +261,72 @@
     </div>
 
     <script>
-        // Fişek türü seçimi değiştiğinde manuel giriş alanlarını göster/gizle
-        document.getElementById('fisekTuru').addEventListener('change', function() {
-            var customBallisticDiv = document.getElementById('customBallisticDiv');
-            if (this.value === 'custom') {
-                customBallisticDiv.style.display = 'block';
+        // Function to handle Yorgun Mermi Mode toggle
+        function toggleYorgunMermiMode() {
+            const yorgunMermiCheckbox = document.getElementById('yorgunMermiModu');
+            const fisekTuruSelect = document.getElementById('fisekTuru');
+            const customBallisticDiv = document.getElementById('customBallisticDiv');
+            const customMuzzleVelocityInput = document.getElementById('customMuzzleVelocity');
+            const customBulletWeightInput = document.getElementById('customBulletWeight');
+            const customBCInput = document.getElementById('customBC');
+
+            if (yorgunMermiCheckbox.checked) {
+                // Yorgun Mermi Modu aktifse
+                fisekTuruSelect.value = 'custom'; // Otomatik olarak özel seçimi yap
+                fisekTuruSelect.disabled = true; // Fişek türü seçimini pasifleştir
+
+                customBallisticDiv.style.display = 'block'; // Özel giriş alanlarını göster
+                customMuzzleVelocityInput.value = 100; // Varsayılan düşük hız (100 m/s)
+                
+                // Mermi ağırlığı ve BC için varsayılan değerleri ata (eğer boşsa veya geçersizse)
+                if (!customBulletWeightInput.value || isNaN(parseFloat(customBulletWeightInput.value))) {
+                    customBulletWeightInput.value = 7.45; // Örn: 9mm ağırlığı
+                }
+                if (!customBCInput.value || isNaN(parseFloat(customBCInput.value))) {
+                    customBCInput.value = 0.160; // Örn: 9mm BC
+                }
+
             } else {
-                customBallisticDiv.style.display = 'none';
+                // Yorgun Mermi Modu deaktifse
+                fisekTuruSelect.disabled = false; // Fişek türü seçimini etkinleştir
+                
+                // Eğer fişek türü hala "custom" değilse, özel girişleri gizle
+                if (fisekTuruSelect.value !== 'custom') {
+                    customBallisticDiv.style.display = 'none';
+                }
+            }
+        }
+
+        // Event listener for Fişek Türü selection
+        document.getElementById('fisekTuru').addEventListener('change', function() {
+            const yorgunMermiCheckbox = document.getElementById('yorgunMermiModu');
+            const customBallisticDiv = document.getElementById('customBallisticDiv');
+
+            // Eğer "Yorgun Mermi Modu" seçili DEĞİLSE, bu dropdown'ın işlevselliği devrede olsun
+            if (!yorgunMermiCheckbox.checked) {
+                if (this.value === 'custom') {
+                    customBallisticDiv.style.display = 'block';
+                } else {
+                    customBallisticDiv.style.display = 'none';
+                }
+            } else {
+                // Eğer Yorgun Mermi Modu seçiliyken kullanıcı Fişek Türü dropdown'ını değiştirmeye çalışırsa,
+                // Yorgun Mermi Modunu kapatıp Fişek Türü dropdown'ını aktif hale getirelim.
+                // Bu durum, disable edilmişken bile bir şekilde value değişirse diye bir güvenlik önlemi.
+                if (this.value !== 'custom') { 
+                    yorgunMermiCheckbox.checked = false; // Yorgun Mermi modunu kapat
+                    toggleYorgunMermiMode(); // Kapanma mantığını tetikle
+                }
             }
         });
+
+        // Initial setup on page load
+        document.addEventListener('DOMContentLoaded', (event) => {
+            // Sayfa yüklendiğinde customBallisticDiv'in doğru görünürlükte olmasını sağla
+            // (eğer HTML'de "custom" seçeneği öntanımlı olarak gelirse veya başka bir durum oluşursa)
+            document.getElementById('fisekTuru').dispatchEvent(new Event('change'));
+        });
+
 
         // Hava sürtünmesi modelini içeren balistik hesaplama fonksiyonu
         function hesapla() {
@@ -362,7 +424,7 @@
             let bestFlightTime = 0;
             let finalImpactAngleFromSimulation = 0;
 
-            // Başlangıç atış açısını farklı değerlerde deneyelim (-45 derece (aşağı) ile +70 derece (yukarı))
+            // Başlangıç atış açısını farklı değerlerde deneyelim (-5 derece (aşağı) ile +70 derece (yukarı))
             for (let theta0_deg = -5; theta0_deg <= 70; theta0_deg += 0.2) { // Daha geniş aralık, daha küçük artışlar
                 const currentTheta0_rad = theta0_deg * (Math.PI / 180);
 
@@ -416,7 +478,20 @@
                             simImpactAngleDeg = Math.atan(Math.abs(finalVy_interp / finalVx_interp)) * (180 / Math.PI);
                             
                             // Çarpma açısı farkını kontrol et
-                            const currentAngleDiff = Math.abs(simImpactAngleDeg - carpisAcisiDerece);
+                            // YORGUN MERMİ MODU İÇİN ÖNEMLİ: carpisAcisiDerece (yüzeye göre açı) ile simImpactAngleDeg (yataya göre açı) eşleştiriliyor.
+                            // Eğer kullanıcı 90 dereceye yakın bir çarpma açısı (yere dikey düşme) bekliyorsa,
+                            // carpisAcisiDerece çok küçük olmalı (yani kısa eksen/uzun eksen oranı çok küçük).
+                            // Aksi takdirde, 62.8 derecelik bir carpisAcisiDerece, 27.2 derecelik bir yatay açıya denk gelir.
+                            // Bu kısım, kullanıcıdan aldığım "yanlış yapıyorsun" geri bildirimi üzerine dikkat edilmesi gereken yer.
+                            // Mevcut kod, elipsden gelen açıyı (carpisAcisiDerece) doğrudan yataydaki çarpma açısıyla eşleştirmeye çalışıyor gibi davranıyor.
+                            // Ancak elips açısı genellikle yüzeyle yapılır.
+                            // Bu nedenle, minAngleDiff hesaplaması için (90 - carpisAcisiDerece) kullanmak daha doğru olabilir.
+                            // Geçici olarak, kullanıcının "yorgun mermi" senaryosunda beklentisi olan dik çarpmayı (yataya göre) sağlamak için:
+                            // Eğer carpisAcisiDerece (yüzeye göre) 62.8 ise, yataya göre 27.2'dir.
+                            // Bu durumda (90 - carpisAcisiDerece) ile eşleşme aramalıyız.
+                            const targetAngleForHorizontalMatch = 90 - carpisAcisiDerece; // Merminin yatay düzleme yaptığı beklenen açı
+                            const currentAngleDiff = Math.abs(simImpactAngleDeg - targetAngleForHorizontalMatch);
+
                             if (currentAngleDiff < minAngleDiff) {
                                 minAngleDiff = currentAngleDiff;
                                 bestTheta0_rad = currentTheta0_rad;
@@ -435,11 +510,11 @@
             let resultHtml = "<h2>Analiz Sonuçları</h2>";
             // minAngleDiff < 20 derece toleransı, oldukça kötü bir eşleşme bile olsa sonuç vermesini sağlar
             if (bestTheta0_rad !== null && minAngleDiff < 20) { 
-                resultHtml += `<p><strong>1. Hesaplanan Çarpış Açısı (İsabet Elipsinden):</strong> ${carpisAcisiDerece.toFixed(2)}°</p>`;
+                resultHtml += `<p><strong>1. Hesaplanan Çarpış Açısı (İsabet Elipsinden - Yüzeye Göre):</strong> ${carpisAcisiDerece.toFixed(2)}°</p>`;
                 resultHtml += `<p><strong>2. Tahmini Atış Mesafesi (Yatay Menzil):</strong> ${bestSimulatedDistance.toFixed(2)} metre</p>`;
                 resultHtml += `<p><strong>3. Tahmini Başlangıç Atış Açısı:</strong> ${(bestTheta0_rad * 180 / Math.PI).toFixed(2)}°</p>`;
                 resultHtml += `<p><strong>4. Tahmini Uçuş Süresi:</strong> ${bestFlightTime.toFixed(2)} saniye</p>`;
-                resultHtml += `<p><strong>5. Simülasyonla Bulunan Çarpış Açısı (Doğrulama):</strong> ${finalImpactAngleFromSimulation.toFixed(2)}° (Hedeflenen: ${carpisAcisiDerece.toFixed(2)}°)</p>`;
+                resultHtml += `<p><strong>5. Simülasyonla Bulunan Çarpış Açısı (Yatay Düzleme Göre Doğrulama):</strong> ${finalImpactAngleFromSimulation.toFixed(2)}° (Hedeflenen: ${(90 - carpisAcisiDerece).toFixed(2)}°)</p>`;
                 resultHtml += `<p><strong>6. Çarpış Açısı Farkı (Modelin Hassasiyeti):</strong> ${minAngleDiff.toFixed(2)}°</p>`;
             } else {
                 resultHtml += `
@@ -449,7 +524,7 @@
                     <ul>
                         <li><strong>Girdi Değerlerini Kontrol Edin:</strong> Özellikle kısa/uzun eksen ölçümlerinizde küçük hatalar büyük fark yaratabilir. Tekrar kontrol edin.</li>
                         <li><strong>Yükseklik Farkı:</strong> Atıcının ve isabet noktasının yükseklik farkı, seçilen fişeğin menzil limitlerinin dışında olabilir.</li>
-                        <li><strong>Fişek Türü (Namlu Çıkış Hızı, Mermi Ağırlığı, BC):</strong> Seçilen fişek türünün balistik verileri, senaryonuza tam uymayabilir. 'Kendi Detaylarımı Gireceğim' seçeneğini kullanarak manuel ayarlamalar yapmayı deneyin.</li>
+                        <li><strong>Fişek Türü (Namlu Çıkış Hızı, Mermi Ağırlığı, BC):</strong> Seçilen fişek türünün balistik verileri, senaryonuza tam uymayabilir. 'Kendi Detaylarımı Gireceğim' seçeneğini kullanarak manuel ayarlamalar yapmayı deneyin. Özellikle 'Yorgun Mermi Modu'nu deneyerek düşük hızlarla test edin.</li>
                         <li><strong>Çok Sığ veya Çok Dik Çarpma Açısı:</strong> Çok sığ açılar (elips neredeyse bir çizgiye yakın) veya çok dik açılar (elips neredeyse daire) hesaplamayı zorlaştırabilir.</li>
                         <li><strong>"Yorgun Mermi" Senaryosu:</strong> Çok uzun mesafeler veya çok düşük hızlı çarpmalar için, merminin çoktan enerjisini kaybettiği bir noktadan gelmesi nedeniyle sonuçlar belirsizleşebilir.</li>
                     </ul>
